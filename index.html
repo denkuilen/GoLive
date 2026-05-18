@@ -3,83 +3,354 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welkom</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <title>Op Vakantie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --zand: #f2ead8;
+      --warm: #e8d5b0;
+      --bruin: #8b6f47;
+      --donker: #2c1f0e;
+      --accent: #c4783a;
+      --wit: #faf7f2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
+      background: var(--zand);
+      color: var(--donker);
+      font-family: 'Jost', sans-serif;
       min-height: 100vh;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* Header */
+    header {
+      padding: 3rem 2rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
       display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--bruin);
+      opacity: 0;
+      animation: fadeIn 0.8s ease 0.1s forwards;
+    }
+
+    header .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      line-height: 1.1;
+      color: var(--donker);
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--bruin);
+      font-weight: 300;
+      margin-top: 0.3rem;
+    }
+
+    /* Lege staat */
+    #leeg {
+      display: none;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #f5f0e8;
-      font-family: 'DM Sans', sans-serif;
-      padding: 2rem;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 4rem 3.5rem;
-      max-width: 560px;
-      width: 100%;
+      padding: 6rem 2rem;
       text-align: center;
-      box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+      gap: 1rem;
     }
 
-    .dot {
-      width: 52px;
-      height: 52px;
-      background: #1a1a2e;
-      border-radius: 50%;
-      margin: 0 auto 2rem;
+    #leeg svg {
+      opacity: 0.25;
+      width: 64px;
+      height: 64px;
     }
 
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 2.4rem;
-      color: #1a1a2e;
-      line-height: 1.2;
-      margin-bottom: 1rem;
+    #leeg h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--bruin);
     }
 
-    p {
-      color: #666;
-      font-size: 1rem;
-      line-height: 1.7;
+    #leeg p {
+      font-size: 0.85rem;
+      color: var(--bruin);
+      opacity: 0.7;
+      max-width: 300px;
+    }
+
+    /* Grid */
+    #grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      columns: 3 280px;
+      column-gap: 1.2rem;
+    }
+
+    .foto-item {
+      break-inside: avoid;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: slideUp 0.5s ease forwards;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      background: var(--warm);
+      cursor: zoom-in;
+    }
+
+    .foto-item img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      transition: transform 0.4s ease;
+    }
+
+    .foto-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .foto-item .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 1rem 0.8rem;
+      background: linear-gradient(transparent, rgba(44,31,14,0.6));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .foto-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .foto-item .naam {
+      color: #fff;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
       font-weight: 300;
     }
 
-    .divider {
-      width: 40px;
-      height: 2px;
-      background: #e8c97a;
-      margin: 2rem auto;
-      border-radius: 2px;
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44,31,14,0.92);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      cursor: zoom-out;
     }
 
-    .tag {
-      display: inline-block;
-      background: #f5f0e8;
-      color: #888;
-      font-size: 0.72rem;
+    #lightbox.open {
+      display: flex;
+    }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      border-radius: 4px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      animation: zoomIn 0.25s ease;
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    #lightbox-close:hover { background: rgba(255,255,255,0.1); }
+
+    /* Teller */
+    #teller {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--donker);
+      color: var(--warm);
+      font-size: 0.7rem;
       letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.4rem 0.9rem;
+      padding: 0.5rem 0.9rem;
       border-radius: 20px;
-      margin-top: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-weight: 500;
+    }
+
+    /* Animaties */
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      #grid { columns: 2 140px; column-gap: 0.7rem; }
+      header { padding: 2rem 1.25rem 1.5rem; }
+      #grid { padding: 1.5rem 1.25rem 3rem; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="dot"></div>
-    <h1>Welkom</h1>
-    <div class="divider"></div>
-    <p>Fijn dat je er bent. Deze pagina is aangemaakt als startpunt en staat klaar om verder uitgebouwd te worden.</p>
-    <div class="tag">GitHub Pages</div>
-  </div>
+
+<header>
+  <span class="eyebrow">Vakantie 2026</span>
+  <h1>Onze <em>avonturen</em></h1>
+  <p id="subtitel">Foto's worden geladen...</p>
+</header>
+
+<div id="leeg">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <path d="M21 15l-5-5L5 21"/>
+  </svg>
+  <h2>Nog geen foto's</h2>
+  <p>Voeg foto's toe aan de map <strong>fotos/</strong> in de repository</p>
+</div>
+
+<div id="grid"></div>
+
+<div id="lightbox">
+  <button id="lightbox-close" onclick="sluitLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<div id="teller"></div>
+
+<script>
+  // GitHub instellingen - pas dit aan naar jouw repository
+  const GITHUB_USER = 'denkuilen';
+  const GITHUB_REPO = 'GoLive';
+  const FOTO_MAP    = 'fotos';
+
+  const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FOTO_MAP}`;
+  const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${FOTO_MAP}/`;
+
+  const EXTENSIES = ['jpg','jpeg','png','gif','webp','avif'];
+
+  async function laadFotos() {
+    const grid    = document.getElementById('grid');
+    const leeg    = document.getElementById('leeg');
+    const subtitel = document.getElementById('subtitel');
+    const teller  = document.getElementById('teller');
+
+    try {
+      const res  = await fetch(API_URL);
+      const data = await res.json();
+
+      if (!Array.isArray(data)) throw new Error('Map niet gevonden');
+
+      const fotos = data.filter(f =>
+        EXTENSIES.includes(f.name.split('.').pop().toLowerCase())
+      );
+
+      if (fotos.length === 0) {
+        subtitel.textContent = 'Nog geen foto\'s geüpload';
+        leeg.style.display = 'flex';
+        return;
+      }
+
+      subtitel.textContent = `${fotos.length} foto${fotos.length !== 1 ? "'s" : ''} gedeeld`;
+      teller.style.opacity = '1';
+      teller.textContent   = `${fotos.length} foto's`;
+
+      fotos.forEach((foto, i) => {
+        const item = document.createElement('div');
+        item.className = 'foto-item';
+        item.style.animationDelay = `${0.05 * i}s`;
+
+        const naam = foto.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+        const src  = RAW_URL + encodeURIComponent(foto.name);
+
+        item.innerHTML = `
+          <img src="${src}" alt="${naam}" loading="lazy" />
+          <div class="overlay"><span class="naam">${naam}</span></div>
+        `;
+
+        item.addEventListener('click', () => openLightbox(src, naam));
+        grid.appendChild(item);
+      });
+
+    } catch (err) {
+      subtitel.textContent = 'Voeg een map "fotos" toe aan de repository';
+      leeg.style.display = 'flex';
+    }
+  }
+
+  function openLightbox(src, alt) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-img').alt = alt;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function sluitLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) sluitLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') sluitLightbox();
+  });
+
+  laadFotos();
+</script>
 </body>
 </html>
