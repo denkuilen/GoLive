@@ -465,7 +465,7 @@
     attributionControl: true
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19
@@ -483,28 +483,6 @@
     direction: 'left',
     offset: [0, 0],
     className: 'kaart-label'
-  });
-
-  [
-    { naam: 'Athene',       latlng: [37.97, 23.73], dir: 'left'  },
-    { naam: 'Thessaloniki', latlng: [40.64, 22.94], dir: 'left'  },
-    { naam: 'Istanbul',     latlng: [41.01, 28.95], dir: 'right' },
-    { naam: 'Ankara',       latlng: [39.93, 32.85], dir: 'right' },
-    { naam: 'Caïro',        latlng: [30.06, 31.24], dir: 'right' },
-  ].forEach(({ naam, latlng, dir }) => {
-    L.circleMarker(latlng, {
-      radius: 4,
-      fillColor: '#8b6f47',
-      color: '#fff',
-      weight: 1.5,
-      opacity: 0.85,
-      fillOpacity: 0.75
-    }).addTo(kaart).bindTooltip(naam, {
-      permanent: true,
-      direction: dir,
-      offset: dir === 'left' ? [-8, 0] : [8, 0],
-      className: 'kaart-label'
-    });
   });
 </script>
 </body>
