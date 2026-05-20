@@ -471,12 +471,10 @@
     document.body.style.overflow = '';
   }
 
-  // Klik op achtergrond sluit lightbox
   document.getElementById('lightbox').addEventListener('click', function(e) {
     if (e.target === this) sluitLightbox();
   });
 
-  // Toetsenbord: pijltjes + Escape
   document.addEventListener('keydown', e => {
     if (!document.getElementById('lightbox').classList.contains('open')) return;
     if (e.key === 'Escape')     sluitLightbox();
@@ -484,7 +482,6 @@
     if (e.key === 'ArrowLeft')  vorigeFoto();
   });
 
-  // Swipe op mobiel
   let swipeStartX = 0;
   const lb = document.getElementById('lightbox');
   lb.addEventListener('touchstart', e => {
@@ -504,7 +501,7 @@
 <script>
   const kaart = L.map('kaart', {
     center: [40, 20],
-    zoom: 3,
+    zoom: 4,
     zoomControl: false,
     scrollWheelZoom: false,
     dragging: false,
