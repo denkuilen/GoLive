@@ -25,7 +25,6 @@
       min-height: 100vh;
     }
 
-    /* Grain overlay */
     body::before {
       content: '';
       position: fixed;
@@ -36,7 +35,6 @@
       opacity: 0.4;
     }
 
-    /* Header */
     header {
       padding: 3rem 2rem 2rem;
       max-width: 1100px;
@@ -76,7 +74,6 @@
       margin-top: 0.3rem;
     }
 
-    /* Lege staat */
     #leeg {
       display: none;
       flex-direction: column;
@@ -87,26 +84,10 @@
       gap: 1rem;
     }
 
-    #leeg svg {
-      opacity: 0.25;
-      width: 64px;
-      height: 64px;
-    }
+    #leeg svg { opacity: 0.25; width: 64px; height: 64px; }
+    #leeg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--bruin); }
+    #leeg p { font-size: 0.85rem; color: var(--bruin); opacity: 0.7; max-width: 300px; }
 
-    #leeg h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      color: var(--bruin);
-    }
-
-    #leeg p {
-      font-size: 0.85rem;
-      color: var(--bruin);
-      opacity: 0.7;
-      max-width: 300px;
-    }
-
-    /* Grid */
     #grid {
       max-width: 1100px;
       margin: 0 auto;
@@ -136,19 +117,13 @@
       opacity: 0;
     }
 
-    .foto-item img.geladen {
-      opacity: 1;
-    }
+    .foto-item img.geladen { opacity: 1; }
 
-    .foto-item:hover img {
-      transform: scale(1.03);
-    }
+    .foto-item:hover img { transform: scale(1.03); }
 
     .foto-item .overlay {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       padding: 1.5rem 1rem 0.8rem;
       background: linear-gradient(transparent, rgba(44,31,14,0.6));
       opacity: 0;
@@ -156,9 +131,7 @@
       border-radius: 0 0 4px 4px;
     }
 
-    .foto-item:hover .overlay {
-      opacity: 1;
-    }
+    .foto-item:hover .overlay { opacity: 1; }
 
     .foto-item .naam {
       color: #fff;
@@ -167,7 +140,6 @@
       font-weight: 300;
     }
 
-    /* Lightbox */
     #lightbox {
       display: none;
       position: fixed;
@@ -180,9 +152,7 @@
       cursor: zoom-out;
     }
 
-    #lightbox.open {
-      display: flex;
-    }
+    #lightbox.open { display: flex; }
 
     #lightbox img {
       max-width: 90vw;
@@ -224,11 +194,9 @@
       #lightbox-next { right: 0.5rem; }
     }
 
-    /* Teller */
     #teller {
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
+      bottom: 1.5rem; right: 1.5rem;
       background: var(--donker);
       color: var(--warm);
       font-size: 0.7rem;
@@ -240,7 +208,6 @@
       font-weight: 500;
     }
 
-    /* Intro sectie */
     #intro {
       max-width: 1100px;
       margin: 0 auto;
@@ -265,10 +232,7 @@
       margin: 0.4rem 0 1rem;
     }
 
-    .intro-tekst h2 em {
-      font-style: italic;
-      color: var(--accent);
-    }
+    .intro-tekst h2 em { font-style: italic; color: var(--accent); }
 
     .intro-tekst p {
       font-size: 0.93rem;
@@ -309,15 +273,8 @@
       #kaart { height: 240px; }
     }
 
-    /* Animaties */
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
     @keyframes zoomIn {
       from { transform: scale(0.92); opacity: 0; }
       to   { transform: scale(1);    opacity: 1; }
@@ -518,10 +475,14 @@
   }).addTo(kaart);
 
   const vlagIcon = L.divIcon({
-    html: '<span style="font-size:1.5rem;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.4));">🇬🇷</span>',
+    html: `<div style="position:relative;width:26px;height:52px;">
+      <span style="position:absolute;top:0;left:2px;font-size:1.2rem;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.35));">🇬🇷</span>
+      <div style="position:absolute;top:18px;left:12px;width:2px;height:26px;background:#2c1f0e;border-radius:1px;"></div>
+      <div style="position:absolute;bottom:0;left:7px;width:10px;height:10px;border-radius:50%;background:#c4783a;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>
+    </div>`,
     className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 12]
+    iconSize: [26, 52],
+    iconAnchor: [12, 52]
   });
 
   L.marker([37.75, 26.83], { icon: vlagIcon })
@@ -529,7 +490,7 @@
     .bindTooltip('Samos', {
       permanent: true,
       direction: 'right',
-      offset: [14, 0],
+      offset: [14, -26],
       className: 'kaart-label'
     });
 </script>
