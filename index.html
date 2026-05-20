@@ -454,8 +454,8 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const kaart = L.map('kaart', {
-    center: [40, 20],
-    zoom: 4,
+    center: [37.75, 26.83],
+    zoom: 5,
     zoomControl: false,
     scrollWheelZoom: false,
     dragging: false,
@@ -483,6 +483,28 @@
     direction: 'left',
     offset: [0, 0],
     className: 'kaart-label'
+  });
+
+  [
+    { naam: 'Athene',       latlng: [37.97, 23.73], dir: 'left'  },
+    { naam: 'Thessaloniki', latlng: [40.64, 22.94], dir: 'left'  },
+    { naam: 'Istanbul',     latlng: [41.01, 28.95], dir: 'right' },
+    { naam: 'Ankara',       latlng: [39.93, 32.85], dir: 'right' },
+    { naam: 'Caïro',        latlng: [30.06, 31.24], dir: 'right' },
+  ].forEach(({ naam, latlng, dir }) => {
+    L.circleMarker(latlng, {
+      radius: 4,
+      fillColor: '#8b6f47',
+      color: '#fff',
+      weight: 1.5,
+      opacity: 0.85,
+      fillOpacity: 0.75
+    }).addTo(kaart).bindTooltip(naam, {
+      permanent: true,
+      direction: dir,
+      offset: dir === 'left' ? [-8, 0] : [8, 0],
+      className: 'kaart-label'
+    });
   });
 </script>
 </body>
