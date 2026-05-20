@@ -132,7 +132,12 @@
       width: 100%;
       display: block;
       border-radius: 4px;
-      transition: transform 0.4s ease;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    .foto-item img.geladen {
+      opacity: 1;
     }
 
     .foto-item:hover img {
@@ -185,6 +190,7 @@
       border-radius: 4px;
       box-shadow: 0 40px 80px rgba(0,0,0,0.5);
       animation: zoomIn 0.25s ease;
+      transition: opacity 0.3s ease;
     }
 
     #lightbox-close {
@@ -354,7 +360,6 @@
 <div id="teller"></div>
 
 <script>
-  // GitHub instellingen - pas dit aan naar jouw repository
   const GITHUB_USER = 'denkuilen';
   const GITHUB_REPO = 'GoLive';
   const FOTO_MAP    = 'fotos';
@@ -365,10 +370,10 @@
   const EXTENSIES = ['jpg','jpeg','png','gif','webp','avif'];
 
   async function laadFotos() {
-    const grid    = document.getElementById('grid');
-    const leeg    = document.getElementById('leeg');
+    const grid     = document.getElementById('grid');
+    const leeg     = document.getElementById('leeg');
     const subtitel = document.getElementById('subtitel');
-    const teller  = document.getElementById('teller');
+    const teller   = document.getElementById('teller');
 
     try {
       const res  = await fetch(API_URL);
@@ -395,15 +400,20 @@
         item.className = 'foto-item';
         item.style.animationDelay = `${0.05 * i}s`;
 
-        const naam = foto.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-        const src  = RAW_URL + encodeURIComponent(foto.name);
+        const naam     = foto.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+        const volledig = RAW_URL + encodeURIComponent(foto.name);
+        const thumb    = `https://wsrv.nl/?url=raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${FOTO_MAP}/${encodeURIComponent(foto.name)}&w=600&q=72&output=webp`;
 
         item.innerHTML = `
-          <img src="${src}" alt="${naam}" loading="lazy" />
+          <img src="${thumb}" alt="${naam}" loading="lazy" />
           <div class="overlay"><span class="naam">${naam}</span></div>
         `;
 
-        item.addEventListener('click', () => openLightbox(src, naam));
+        item.querySelector('img').addEventListener('load', function() {
+          this.classList.add('geladen');
+        });
+
+        item.addEventListener('click', () => openLightbox(volledig, naam));
         grid.appendChild(item);
       });
 
@@ -414,10 +424,13 @@
   }
 
   function openLightbox(src, alt) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox-img').alt = alt;
+    const img = document.getElementById('lightbox-img');
+    img.style.opacity = '0';
+    img.src = src;
+    img.alt = alt;
     document.getElementById('lightbox').classList.add('open');
     document.body.style.overflow = 'hidden';
+    img.onload = () => { img.style.opacity = '1'; };
   }
 
   function sluitLightbox() {
