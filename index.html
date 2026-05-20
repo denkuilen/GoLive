@@ -193,25 +193,36 @@
       transition: opacity 0.3s ease;
     }
 
-    #lightbox-close {
+    #lightbox-close,
+    #lightbox-prev,
+    #lightbox-next {
       position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
       background: none;
       border: 1px solid rgba(255,255,255,0.3);
       color: #fff;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      font-size: 1.1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: background 0.2s;
+      z-index: 510;
     }
 
-    #lightbox-close:hover { background: rgba(255,255,255,0.1); }
+    #lightbox-close:hover,
+    #lightbox-prev:hover,
+    #lightbox-next:hover { background: rgba(255,255,255,0.15); }
+
+    #lightbox-close { top: 1.5rem; right: 1.5rem; font-size: 1.1rem; }
+    #lightbox-prev  { top: 50%; left: 1.5rem;  transform: translateY(-50%); font-size: 1.8rem; padding-bottom: 2px; }
+    #lightbox-next  { top: 50%; right: 1.5rem; transform: translateY(-50%); font-size: 1.8rem; padding-bottom: 2px; }
+
+    @media (max-width: 600px) {
+      #lightbox-prev { left: 0.5rem; }
+      #lightbox-next { right: 0.5rem; }
+    }
 
     /* Teller */
     #teller {
@@ -354,6 +365,8 @@
 
 <div id="lightbox">
   <button id="lightbox-close" onclick="sluitLightbox()">&#10005;</button>
+  <button id="lightbox-prev" onclick="vorigeFoto()">&#8249;</button>
+  <button id="lightbox-next" onclick="volgendeFoto()">&#8250;</button>
   <img id="lightbox-img" src="" alt="" />
 </div>
 
@@ -368,6 +381,9 @@
   const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${FOTO_MAP}/`;
 
   const EXTENSIES = ['jpg','jpeg','png','gif','webp','avif'];
+
+  let fotosLijst = [];
+  let huidigIndex = 0;
 
   async function laadFotos() {
     const grid     = document.getElementById('grid');
@@ -404,6 +420,8 @@
         const volledig = RAW_URL + encodeURIComponent(foto.name);
         const thumb    = `https://wsrv.nl/?url=raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${FOTO_MAP}/${encodeURIComponent(foto.name)}&w=600&q=72&output=webp`;
 
+        fotosLijst.push({ volledig, naam });
+
         item.innerHTML = `
           <img src="${thumb}" alt="${naam}" loading="lazy" />
           <div class="overlay"><span class="naam">${naam}</span></div>
@@ -413,7 +431,7 @@
           this.classList.add('geladen');
         });
 
-        item.addEventListener('click', () => openLightbox(volledig, naam));
+        item.addEventListener('click', () => openLightbox(i));
         grid.appendChild(item);
       });
 
@@ -423,14 +441,29 @@
     }
   }
 
-  function openLightbox(src, alt) {
+  function toonFoto(index) {
     const img = document.getElementById('lightbox-img');
     img.style.opacity = '0';
-    img.src = src;
-    img.alt = alt;
+    img.src = fotosLijst[index].volledig;
+    img.alt = fotosLijst[index].naam;
+    img.onload = () => { img.style.opacity = '1'; };
+  }
+
+  function openLightbox(index) {
+    huidigIndex = index;
+    toonFoto(index);
     document.getElementById('lightbox').classList.add('open');
     document.body.style.overflow = 'hidden';
-    img.onload = () => { img.style.opacity = '1'; };
+  }
+
+  function volgendeFoto() {
+    huidigIndex = (huidigIndex + 1) % fotosLijst.length;
+    toonFoto(huidigIndex);
+  }
+
+  function vorigeFoto() {
+    huidigIndex = (huidigIndex - 1 + fotosLijst.length) % fotosLijst.length;
+    toonFoto(huidigIndex);
   }
 
   function sluitLightbox() {
@@ -438,12 +471,30 @@
     document.body.style.overflow = '';
   }
 
+  // Klik op achtergrond sluit lightbox
   document.getElementById('lightbox').addEventListener('click', function(e) {
     if (e.target === this) sluitLightbox();
   });
 
+  // Toetsenbord: pijltjes + Escape
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') sluitLightbox();
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape')     sluitLightbox();
+    if (e.key === 'ArrowRight') volgendeFoto();
+    if (e.key === 'ArrowLeft')  vorigeFoto();
+  });
+
+  // Swipe op mobiel
+  let swipeStartX = 0;
+  const lb = document.getElementById('lightbox');
+  lb.addEventListener('touchstart', e => {
+    swipeStartX = e.touches[0].clientX;
+  }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const delta = swipeStartX - e.changedTouches[0].clientX;
+    if (Math.abs(delta) > 50) {
+      delta > 0 ? volgendeFoto() : vorigeFoto();
+    }
   });
 
   laadFotos();
