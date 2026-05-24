@@ -726,8 +726,6 @@
     ];
 
     routeKaart = L.map('route-kaart', {
-      center: [37.735, 26.800],
-      zoom: 11,
       zoomControl: false,
       scrollWheelZoom: false,
       dragging: true,
@@ -764,6 +762,9 @@
         offset: [0, -16]
       });
     });
+
+    const bounds = L.latLngBounds(stops.map(s => s.latlng));
+    routeKaart.fitBounds(bounds, { padding: [32, 32] });
   }
 
   function openRoadtour() {
