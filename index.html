@@ -305,7 +305,7 @@
     }
 
     .roadtour-kaart::after {
-      content: '›';
+      content: '\203A';
       position: absolute;
       right: 2rem; top: 50%;
       transform: translateY(-50%);
@@ -439,6 +439,33 @@
       opacity: 0.8;
     }
 
+    /* Route kaart in modal */
+    #route-kaart {
+      height: 260px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--warm);
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 16px rgba(44,31,14,0.1);
+    }
+
+    .route-marker {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #fff;
+      border: 2.5px solid #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+
     /* Footer */
     footer {
       max-width: 1100px;
@@ -507,7 +534,7 @@
 <div id="grid"></div>
 
 <footer>
-  <p>Techniek &amp; website 100% gemaakt door <a href="https://claude.ai/code" target="_blank" rel="noopener">Claude Code</a> &nbsp;·&nbsp; Inhoud &amp; avonturen door de familie Van Kuilenburg</p>
+  <p>Techniek &amp; website 100% gemaakt door <a href="https://claude.ai/code" target="_blank" rel="noopener">Claude Code</a> &nbsp;&middot;&nbsp; Inhoud &amp; avonturen door de familie Van Kuilenburg</p>
 </footer>
 
 <div id="lightbox">
@@ -525,6 +552,8 @@
     <span class="eyebrow">Zaterdag · Eiland Road Tour</span>
     <h2 class="modal-titel">Onze <em>Roadtrip</em> op Samos</h2>
     <p class="modal-subtitel">Zes bezienswaardigheden — van UNESCO-erfgoed tot authentiek vissersdorp</p>
+
+    <div id="route-kaart"></div>
 
     <div class="bezienswaardigheid">
       <h3><span>01</span>Eupalinos Tunnel</h3>
@@ -684,9 +713,66 @@
 
   laadFotos();
 
+  let routeKaart = null;
+
+  function initRouteKaart() {
+    const stops = [
+      { nr: 1, naam: 'Eupalinos Tunnel', latlng: [37.6920, 26.9428] },
+      { nr: 2, naam: 'Heraion',          latlng: [37.6640, 26.8317] },
+      { nr: 3, naam: 'Potami Waterval',  latlng: [37.7917, 26.6519] },
+      { nr: 4, naam: 'Manolates',        latlng: [37.7683, 26.7108] },
+      { nr: 5, naam: 'Kokkari',          latlng: [37.7856, 26.8864] },
+      { nr: 6, naam: 'Vathy',            latlng: [37.7500, 26.9767] },
+    ];
+
+    routeKaart = L.map('route-kaart', {
+      center: [37.735, 26.800],
+      zoom: 11,
+      zoomControl: false,
+      scrollWheelZoom: false,
+      dragging: true,
+      touchZoom: true,
+      doubleClickZoom: false,
+      keyboard: false,
+      attributionControl: true
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(routeKaart);
+
+    L.polyline(stops.map(s => s.latlng), {
+      color: '#c4783a',
+      weight: 2.5,
+      opacity: 0.65,
+      dashArray: '6, 5'
+    }).addTo(routeKaart);
+
+    stops.forEach(stop => {
+      L.marker(stop.latlng, {
+        icon: L.divIcon({
+          html: `<div class="route-marker">${stop.nr}</div>`,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).addTo(routeKaart).bindTooltip(stop.naam, {
+        permanent: false,
+        direction: 'top',
+        offset: [0, -16]
+      });
+    });
+  }
+
   function openRoadtour() {
     document.getElementById('roadtour-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      if (!routeKaart) { initRouteKaart(); }
+      else { routeKaart.invalidateSize(); }
+    }, 60);
   }
 
   function sluitRoadtour() {
